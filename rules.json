@@ -1,0 +1,182 @@
+{
+  "version": "2026.10-r1",
+  "note": "Trọng số 0-100. Điểm tổng = 100 x (1 - tích(1 - w/100)). Từ khóa được so khớp cả có dấu và không dấu. Sửa file này rồi khởi động lại chương trình.",
+  "thresholds": {
+    "caution": 25,
+    "dangerous": 60,
+    "min_categories_for_dangerous": 2
+  },
+  "categories": [
+    {"id": "money_request", "name": "Yêu cầu chuyển tiền hoặc nộp phí"},
+    {"id": "credential_request", "name": "Đòi OTP, mật khẩu, mã xác thực, sinh trắc học"},
+    {"id": "urgency_threat", "name": "Ép khẩn cấp, đe dọa, gây hoảng sợ"},
+    {"id": "reward_lure", "name": "Mồi nhử: thưởng, quà, học bổng, việc nhẹ lương cao"},
+    {"id": "app_install", "name": "Cài APK hoặc ứng dụng ngoài kho chính thức"},
+    {"id": "impersonation", "name": "Giả danh nhà trường, công an, ngân hàng, cơ quan nhà nước"},
+    {"id": "secrecy", "name": "Yêu cầu giữ bí mật, tách khỏi người lớn"},
+    {"id": "suspicious_url", "name": "Liên kết có cấu trúc đáng ngờ"},
+    {"id": "brand_mismatch", "name": "Thương hiệu không khớp tên miền"},
+    {"id": "qr_risk", "name": "Mã QR đáng ngờ"},
+    {"id": "behavior_combo", "name": "Tổ hợp hành vi lừa đảo điển hình"}
+  ],
+  "keyword_rules": [
+    {
+      "id": "KW_TRANSFER_MONEY", "category": "money_request", "weight": 30,
+      "description": "Yêu cầu chuyển khoản hoặc chuyển tiền",
+      "patterns": ["chuyển khoản", "chuyển tiền", "ck trước", "chuyển trước", "số tài khoản", "stk", "nạp tiền", "chuyển gấp"],
+      "reason": "Tin nhắn đề nghị chuyển tiền. Kẻ gian thường viện nhiều lý do để nạn nhân chuyển tiền nhanh.",
+      "action": "Không chuyển tiền. Gọi trực tiếp người thân hoặc nhà trường qua số bạn đã biết để xác minh."
+    },
+    {
+      "id": "KW_FEE", "category": "money_request", "weight": 30,
+      "description": "Đòi nộp phí, đặt cọc để nhận quyền lợi",
+      "patterns": ["nộp phí", "phí xử lý", "phí hồ sơ", "phí kích hoạt", "phí nhận thưởng", "phí vận chuyển", "đặt cọc", "lệ phí", "phí giữ chỗ", "phí bảo đảm"],
+      "reason": "Đòi đóng phí trước để nhận thưởng, học bổng hay việc làm là cách lừa phổ biến.",
+      "action": "Không đóng phí qua tin nhắn. Hỏi trực tiếp văn phòng nhà trường hoặc đơn vị chính thức."
+    },
+    {
+      "id": "KW_OTP", "category": "credential_request", "weight": 45,
+      "description": "Đòi mã OTP hoặc mã xác thực",
+      "patterns": ["otp", "mã xác thực", "mã xác nhận", "mã kích hoạt", "mã pin", "mã gồm 6 số", "đọc mã", "gửi mã"],
+      "reason": "Không tổ chức hợp pháp nào yêu cầu bạn gửi mã OTP. Ai có OTP có thể chiếm tài khoản.",
+      "action": "Tuyệt đối không gửi OTP hay mã xác thực cho bất kỳ ai, kể cả người tự xưng là thầy cô hay ngân hàng."
+    },
+    {
+      "id": "KW_PASSWORD", "category": "credential_request", "weight": 40,
+      "description": "Đòi mật khẩu hoặc thông tin đăng nhập",
+      "patterns": ["mật khẩu", "password", "tài khoản và mật khẩu", "đăng nhập giúp", "cho mượn nick", "cho mượn acc", "gửi pass"],
+      "reason": "Mật khẩu chỉ của riêng bạn. Yêu cầu cung cấp mật khẩu là dấu hiệu chiếm đoạt tài khoản.",
+      "action": "Không chia sẻ mật khẩu. Đổi mật khẩu và bật xác thực hai lớp nếu đã lỡ gửi."
+    },
+    {
+      "id": "KW_BIOMETRIC", "category": "credential_request", "weight": 40,
+      "description": "Đòi dữ liệu sinh trắc học hoặc giấy tờ tùy thân",
+      "patterns": ["sinh trắc học", "quét khuôn mặt", "xác thực khuôn mặt", "quay video khuôn mặt", "ảnh chân dung", "căn cước", "cccd", "ảnh hai mặt"],
+      "reason": "Ảnh khuôn mặt, giấy tờ tùy thân có thể bị dùng để mở tài khoản giả hoặc vượt xác thực.",
+      "action": "Không gửi ảnh mặt, video khuôn mặt hay giấy tờ tùy thân qua tin nhắn. Hỏi bố mẹ trước."
+    },
+    {
+      "id": "KW_URGENT", "category": "urgency_threat", "weight": 20,
+      "description": "Ép thực hiện gấp",
+      "patterns": ["khẩn cấp", "ngay lập tức", "ngay bây giờ", "trong vòng 24 giờ", "trong vòng 24h", "trong 30 phút", "hết hạn hôm nay", "chỉ còn hôm nay", "gấp gấp", "cơ hội cuối"],
+      "reason": "Ép thời gian khiến người nhận không kịp suy nghĩ hay hỏi người lớn.",
+      "action": "Dừng lại, không làm theo ngay. Tin thật vẫn chờ được vài phút để bạn kiểm tra."
+    },
+    {
+      "id": "KW_THREAT", "category": "urgency_threat", "weight": 30,
+      "description": "Đe dọa khóa tài khoản, kỷ luật, xử lý pháp luật",
+      "patterns": ["sẽ bị khóa", "bị khóa tài khoản", "khóa vĩnh viễn", "đình chỉ", "bị kỷ luật", "đuổi học", "truy cứu", "bắt giam", "lệnh bắt", "liên quan đường dây", "rửa tiền", "nếu không thực hiện"],
+      "reason": "Đe dọa để gây hoảng sợ là chiêu quen thuộc khi giả danh công an hoặc nhà trường.",
+      "action": "Không hoảng sợ. Cơ quan chức năng không làm việc qua tin nhắn, cuộc gọi video hay yêu cầu chuyển tiền."
+    },
+    {
+      "id": "KW_PRIZE", "category": "reward_lure", "weight": 25,
+      "description": "Thông báo trúng thưởng, nhận quà",
+      "patterns": ["trúng thưởng", "nhận thưởng", "nhận quà", "quà tặng miễn phí", "phần quà", "tri ân", "may mắn được chọn", "kim cương miễn phí", "nạp thẻ miễn phí", "acc miễn phí"],
+      "reason": "Bạn không tham gia nhưng vẫn ‘trúng thưởng’ thì rất đáng nghi.",
+      "action": "Không bấm nhận quà. Quà thật không đòi phí, mật khẩu hay OTP."
+    },
+    {
+      "id": "KW_SCHOLARSHIP", "category": "reward_lure", "weight": 20,
+      "description": "Mồi nhử học bổng, xét tuyển đặc biệt",
+      "patterns": ["học bổng", "suất học bổng", "xét tuyển thẳng", "miễn học phí", "hỗ trợ học phí", "du học miễn phí"],
+      "reason": "Học bổng là có thật, nhưng thông báo học bổng kèm đòi phí hoặc thông tin cá nhân thường là giả.",
+      "action": "Kiểm tra trên website chính thức của trường hoặc hỏi giáo viên chủ nhiệm."
+    },
+    {
+      "id": "KW_EASY_JOB", "category": "reward_lure", "weight": 30,
+      "description": "Việc nhẹ lương cao, làm nhiệm vụ nhận hoa hồng",
+      "patterns": ["việc nhẹ lương cao", "kiếm tiền online", "làm nhiệm vụ", "nhận hoa hồng", "cộng tác viên", "ctv", "thu nhập hấp dẫn", "like dạo", "chốt đơn ảo", "làm tại nhà"],
+      "reason": "Lời mời ‘làm nhiệm vụ nhận hoa hồng’ thường bắt nạp tiền trước rồi chiếm đoạt.",
+      "action": "Không tham gia. Học sinh không nên nhận việc online qua tin nhắn lạ."
+    },
+    {
+      "id": "KW_APK", "category": "app_install", "weight": 40,
+      "description": "Yêu cầu tải file APK hoặc ứng dụng ngoài kho chính thức",
+      "patterns": ["apk", "file cài đặt", "cài ứng dụng", "tải ứng dụng", "cài đặt ứng dụng", "nguồn không xác định", "testflight", "bản cập nhật mới qua link"],
+      "reason": "Ứng dụng cài từ link lạ có thể đọc tin nhắn, OTP và điều khiển điện thoại.",
+      "action": "Chỉ cài ứng dụng từ Google Play hoặc App Store. Không bật ‘cài từ nguồn không xác định’."
+    },
+    {
+      "id": "KW_REMOTE", "category": "app_install", "weight": 40,
+      "description": "Yêu cầu cài phần mềm điều khiển từ xa",
+      "patterns": ["teamviewer", "ultraviewer", "anydesk", "điều khiển từ xa", "chia sẻ màn hình"],
+      "reason": "Phần mềm điều khiển từ xa cho người lạ toàn quyền trên thiết bị của bạn.",
+      "action": "Không cài và không cấp quyền điều khiển cho người lạ."
+    },
+    {
+      "id": "KW_IMPERSONATE_SCHOOL", "category": "impersonation", "weight": 12,
+      "description": "Nhắc tới giáo viên, nhà trường, cơ quan giáo dục",
+      "patterns": ["giáo viên chủ nhiệm", "cô chủ nhiệm", "thầy chủ nhiệm", "ban giám hiệu", "nhà trường", "phòng giáo dục", "sở giáo dục", "bộ giáo dục"],
+      "reason": "Nhắc tới nhà trường không xấu, nhưng kẻ gian hay giả danh thầy cô để tạo lòng tin.",
+      "action": "Xác minh bằng cách hỏi trực tiếp thầy cô tại lớp hoặc qua số điện thoại nhà trường công bố."
+    },
+    {
+      "id": "KW_IMPERSONATE_AUTHORITY", "category": "impersonation", "weight": 15,
+      "description": "Nhắc tới công an, tòa án, cơ quan nhà nước",
+      "patterns": ["công an", "cảnh sát", "viện kiểm sát", "tòa án", "cơ quan điều tra", "cơ quan thuế", "dịch vụ công", "vneid", "định danh điện tử"],
+      "reason": "Giả danh cơ quan nhà nước để đe dọa và yêu cầu cung cấp thông tin là thủ đoạn phổ biến.",
+      "action": "Cơ quan nhà nước làm việc bằng giấy mời chính thức. Báo ngay cho bố mẹ."
+    },
+    {
+      "id": "KW_IMPERSONATE_BANK", "category": "impersonation", "weight": 15,
+      "description": "Nhắc tới ngân hàng, ví điện tử, nhà mạng",
+      "patterns": ["ngân hàng", "nhân viên ngân hàng", "ví điện tử", "tổng đài", "nhà mạng", "chăm sóc khách hàng", "bưu điện"],
+      "reason": "Kẻ gian giả làm ngân hàng, tổng đài để xin OTP hoặc dụ cài ứng dụng.",
+      "action": "Gọi lại tổng đài in trên thẻ hoặc website chính thức, không gọi số trong tin nhắn."
+    },
+    {
+      "id": "KW_SECRECY", "category": "secrecy", "weight": 35,
+      "description": "Yêu cầu giữ bí mật, không cho người lớn biết",
+      "patterns": ["giữ bí mật", "không được nói với ai", "đừng nói với ai", "đừng nói với bố mẹ", "không cho bố mẹ biết", "không cho phụ huynh biết", "xóa tin nhắn này", "nói chuyện riêng"],
+      "reason": "Bắt giữ bí mật nhằm cô lập bạn khỏi người có thể giúp. Đây là dấu hiệu rất đáng lo.",
+      "action": "Hãy nói ngay với bố mẹ hoặc thầy cô. Người tốt không bắt trẻ giấu người lớn."
+    }
+  ],
+  "url_rules": [
+    {"id": "URL_IP_HOST", "category": "suspicious_url", "weight": 35, "description": "Liên kết dùng địa chỉ IP thay cho tên miền", "reason": "Trang web hợp pháp hầu như luôn dùng tên miền. Địa chỉ IP thường che giấu chủ sở hữu.", "action": "Không mở liên kết dùng địa chỉ IP."},
+    {"id": "URL_PUNYCODE", "category": "suspicious_url", "weight": 35, "description": "Tên miền dạng punycode (xn--) hoặc chứa ký tự lạ", "reason": "Punycode cho phép tạo tên miền trông giống thật bằng ký tự của ngôn ngữ khác.", "action": "Gõ tay tên miền chính thức thay vì bấm liên kết."},
+    {"id": "URL_AT_SIGN", "category": "suspicious_url", "weight": 30, "description": "Liên kết chứa ký tự @", "reason": "Phần trước @ bị trình duyệt bỏ qua, nên liên kết có thể dẫn tới trang khác hẳn.", "action": "Không mở liên kết có ký tự @ trong địa chỉ."},
+    {"id": "URL_MANY_SUBDOMAINS", "category": "suspicious_url", "weight": 20, "description": "Quá nhiều tên miền con", "reason": "Nhiều tầng tên miền con có thể đẩy tên thật ra xa để đánh lừa.", "action": "Đọc phần tên miền chính (ngay trước .com, .vn...) trước khi tin."},
+    {"id": "URL_SUSPICIOUS_TLD", "category": "suspicious_url", "weight": 20, "description": "Đuôi tên miền hay bị lạm dụng", "reason": "Một số đuôi tên miền rẻ hoặc miễn phí thường được dùng cho trang lừa đảo.", "action": "Cẩn trọng với tên miền có đuôi lạ."},
+    {"id": "URL_SHORTENER", "category": "suspicious_url", "weight": 20, "description": "Liên kết rút gọn", "reason": "Liên kết rút gọn che giấu địa chỉ thật phía sau.", "action": "Không mở liên kết rút gọn từ người lạ."},
+    {"id": "URL_SUSPICIOUS_WORDS", "category": "suspicious_url", "weight": 20, "description": "Tên miền chứa từ ngữ dụ dỗ (login, verify, nhanqua...)", "reason": "Kẻ gian chèn từ như ‘xac-thuc’, ‘nhan-qua’ vào tên miền để trông đáng tin.", "action": "Không đăng nhập qua liên kết này."},
+    {"id": "URL_MANY_HYPHENS", "category": "suspicious_url", "weight": 10, "description": "Tên miền có nhiều dấu gạch ngang", "reason": "Tên miền ghép nhiều dấu gạch ngang thường là tên miền tạm, giả mạo.", "action": "Kiểm tra kỹ tên miền."},
+    {"id": "URL_TOO_LONG", "category": "suspicious_url", "weight": 10, "description": "Liên kết quá dài", "reason": "Liên kết rất dài có thể giấu thông tin hoặc tham số theo dõi.", "action": "Cẩn thận với liên kết dài bất thường."},
+    {"id": "URL_BRAND_LOOKALIKE", "category": "brand_mismatch", "weight": 45, "description": "Tên miền chứa tên thương hiệu nhưng không phải tên miền chính thức", "reason": "Tên miền cố tình chứa tên ngân hàng, game hay cơ quan nhưng không phải trang chính thức.", "action": "Chỉ dùng trang chính thức bạn tự gõ hoặc ứng dụng chính hãng."},
+    {"id": "BRAND_CONTENT_MISMATCH", "category": "brand_mismatch", "weight": 35, "description": "Nội dung nhắc thương hiệu nhưng liên kết dẫn tới tên miền khác", "reason": "Tin nhắn nhân danh một tổ chức nhưng liên kết lại không thuộc tổ chức đó.", "action": "Không bấm liên kết. Tự tìm trang chính thức của tổ chức để kiểm tra."},
+    {"id": "QR_SUSPICIOUS_URL", "category": "qr_risk", "weight": 25, "description": "Mã QR dẫn tới liên kết đáng ngờ", "reason": "Mã QR che giấu địa chỉ, người dùng không nhìn thấy trước khi quét.", "action": "Không quét/mở mã QR từ nguồn lạ. Xem địa chỉ trước khi mở."},
+    {"id": "QR_PAYMENT", "category": "qr_risk", "weight": 10, "description": "Mã QR là mã thanh toán/chuyển khoản", "reason": "Đây là mã chuyển tiền. Chỉ đáng lo nếu đi kèm lời dụ dỗ hoặc ép buộc.", "action": "Kiểm tra tên người nhận và hỏi bố mẹ trước khi chuyển tiền."}
+  ],
+  "combo_rules": [
+    {"id": "COMBO_FEE_FOR_PRIZE", "categories": ["reward_lure", "money_request"], "weight": 25, "description": "Nhận thưởng nhưng phải nộp tiền trước", "reason": "Kết hợp ‘được thưởng’ và ‘phải trả phí’ là mô hình lừa đảo kinh điển.", "action": "Không trả bất kỳ khoản phí nào để nhận thưởng."},
+    {"id": "COMBO_AUTHORITY_THREAT", "categories": ["impersonation", "urgency_threat"], "weight": 20, "description": "Giả danh kèm đe dọa", "reason": "Danh nghĩa cơ quan, nhà trường đi cùng lời đe dọa nhằm gây hoảng loạn.", "action": "Gác máy/ngừng trả lời và báo người lớn."},
+    {"id": "COMBO_AUTHORITY_CREDENTIAL", "categories": ["impersonation", "credential_request"], "weight": 25, "description": "Giả danh kèm đòi OTP, mật khẩu", "reason": "Tổ chức thật không bao giờ hỏi OTP hay mật khẩu.", "action": "Không cung cấp. Liên hệ tổ chức qua kênh chính thức."},
+    {"id": "COMBO_URGENT_MONEY", "categories": ["urgency_threat", "money_request"], "weight": 20, "description": "Ép chuyển tiền gấp", "reason": "Chuyển tiền gấp không kịp kiểm tra là mục tiêu chính của kẻ lừa đảo.", "action": "Chờ, gọi điện xác minh trực tiếp trước khi chuyển."},
+    {"id": "COMBO_LINK_CREDENTIAL", "categories": ["suspicious_url", "credential_request"], "weight": 20, "description": "Liên kết đáng ngờ kèm yêu cầu đăng nhập/OTP", "reason": "Trang giả mạo thu thập mật khẩu và OTP qua liên kết.", "action": "Không nhập thông tin vào trang mở từ liên kết lạ."}
+  ],
+  "url_lists": {
+    "max_subdomains": 2,
+    "max_url_length": 120,
+    "max_hyphens": 2,
+    "multi_part_suffixes": ["com.vn", "edu.vn", "gov.vn", "net.vn", "org.vn", "ac.vn", "health.vn", "info.vn", "co.uk", "com.au", "co.jp"],
+    "suspicious_tlds": ["xyz", "top", "club", "online", "site", "shop", "icu", "cyou", "buzz", "click", "link", "live", "tk", "ml", "ga", "cf", "gq", "rest", "monster", "sbs", "vip", "win", "bid", "loan", "work"],
+    "shorteners": ["bit.ly", "bitly.com", "tinyurl.com", "t.ly", "is.gd", "cutt.ly", "rb.gy", "shorturl.at", "s.id", "tiny.cc", "ow.ly", "goo.gl", "rebrand.ly", "t.co", "v.gd", "shorten.asia", "urlz.fr"],
+    "suspicious_words": ["login", "verify", "xacthuc", "xac-thuc", "xacminh", "xac-minh", "secure", "update", "capnhat", "cap-nhat", "nhanqua", "nhan-qua", "nhanthuong", "nhan-thuong", "trungthuong", "trung-thuong", "hocbong", "hoc-bong", "freefire", "kimcuong", "khoa-tai-khoan", "mienphi", "mien-phi", "taikhoan", "tai-khoan"]
+  },
+  "brands": [
+    {"name": "Vietcombank", "keywords": ["vietcombank", "vcb"], "official_domains": ["vietcombank.com.vn"]},
+    {"name": "Techcombank", "keywords": ["techcombank"], "official_domains": ["techcombank.com", "techcombank.com.vn"]},
+    {"name": "BIDV", "keywords": ["bidv"], "official_domains": ["bidv.com.vn"]},
+    {"name": "Agribank", "keywords": ["agribank"], "official_domains": ["agribank.com.vn"]},
+    {"name": "VietinBank", "keywords": ["vietinbank"], "official_domains": ["vietinbank.vn"]},
+    {"name": "MB Bank", "keywords": ["mbbank", "mb bank"], "official_domains": ["mbbank.com.vn"]},
+    {"name": "MoMo", "keywords": ["momo"], "official_domains": ["momo.vn"]},
+    {"name": "Zalo / ZaloPay", "keywords": ["zalo", "zalopay"], "official_domains": ["zalo.me", "zalo.vn", "zalopay.vn"]},
+    {"name": "Facebook / Messenger", "keywords": ["facebook", "messenger"], "official_domains": ["facebook.com", "fb.com", "fb.me", "messenger.com"]},
+    {"name": "Shopee", "keywords": ["shopee"], "official_domains": ["shopee.vn"]},
+    {"name": "Garena / Free Fire / Liên Quân", "keywords": ["garena", "free fire", "freefire", "liên quân"], "official_domains": ["garena.vn", "garena.com"]},
+    {"name": "Cơ quan nhà nước", "keywords": ["bộ công an", "công an", "dịch vụ công", "vneid", "cơ quan thuế"], "official_domains": ["gov.vn"]},
+    {"name": "Ngành giáo dục", "keywords": ["bộ giáo dục", "sở giáo dục", "phòng giáo dục"], "official_domains": ["edu.vn", "gov.vn"]}
+  ]
+}
